@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdlib.h>
 #define ARRAY_MAX 2500
 
 int main() {
@@ -51,27 +52,23 @@ int main() {
 			
 	}
 	
-	fprintf(fp, "(assert (and ");
 	for(int x = 0; x < M; x++) {
-		fprintf(fp, "(= (+  ");
+		fprintf(fp, "(assert (= (+  ");
 		for(int y = 0; y < N; y++) {
 			// ite
 			fprintf(fp, "(ite (= b%d_%d 1) a%d_%d 0) ",y,x,y,x);
 		}
-		fprintf(fp, ") %d) ",col[x]);
+		fprintf(fp, ") %d)) ",col[x]);
 	}
-	fprintf(fp, "))\n");
 
-	fprintf(fp, "(assert (and ");
 	for(int y = 0; y < N; y++) {
-		fprintf(fp, "(= (+  ");
+		fprintf(fp, "(assert (= (+  ");
 		for(int x = 0; x < M; x++) {
 			// ite
 			fprintf(fp, "(ite (= b%d_%d 0) a%d_%d 0) ",y,x,y,x);
 		}
-		fprintf(fp, ") %d) ",row[y]);
+		fprintf(fp, ") %d)) ",row[y]);
 	}
-	fprintf(fp, "))\n");
 	fprintf(fp, "(check-sat)\n(get-model)\n") ;
 	
 	fclose(fp);
@@ -92,11 +89,11 @@ int main() {
 
         // Check satisfying
     	fscanf(fin,"%s",satis);
-		if(!strcmp("unsat",satis)) {
-			fscanf(fin,"%s",b); // error message absort
-			printf("No solution\n");
-			exit(1);
-		}
+	if(!strcmp("unsat",satis)) {
+		fscanf(fin,"%s",b); // error message absort
+		printf("No solution\n");
+		exit(1);
+	}
         else if(!strcmp("sat",satis)) {
 			fscanf(fin,"%s",b); // get-model message
 			while(true) {
